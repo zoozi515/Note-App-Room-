@@ -11,21 +11,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private val noteDao by lazy { NoteDatabase.getDatabase(this).NoteDao() }
+    private val noteDao by lazy { NoteDatabase.getDatabase(this).noteDao() }
     private val repository by lazy { NoteRepository(noteDao) }
 
     private lateinit var rvNotes: RecyclerView
     private lateinit var editText: EditText
     private lateinit var submitBtn: Button
 
-    private lateinit var notes: ArrayList<Notes>
-    lateinit var adapter : NoteAdapter
+    private lateinit var notes: List<Notes>
+    lateinit var adapter: NoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +40,14 @@ class MainActivity : AppCompatActivity() {
             addNote(editText.text.toString())
             editText.text.clear()
             editText.clearFocus()
-            updateRV(notes)
+            //updateRV()
+            getItemsList()
         }
 
-        getItemsList()
+        //getItemsList()
 
         rvNotes = findViewById(R.id.recyclerView)
+        updateRV()
         adapter = NoteAdapter(this, notes)
         rvNotes.adapter = adapter
         rvNotes.layoutManager = LinearLayoutManager(this)
@@ -52,18 +55,25 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun updateRV(new_note : ArrayList<Notes>){
-        adapter.updateRv(new_note)
+    private fun updateRV(){
+        rvNotes.adapter = NoteAdapter(this, notes)
+        rvNotes.layoutManager = LinearLayoutManager(this)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            adapter.updateAdapter(notes)
+            rvNotes.adapter = adapter
+            rvNotes.layoutManager = LinearLayoutManager(this@MainActivity)
+        }
     }
 
     private fun getItemsList(){
         CoroutineScope(IO).launch {
             val data = async {
-                repository.getNotes
+                repository.getNotes()
             }.await()
             if(data.isNotEmpty()){
                 notes = data
-                updateRV(notes)
+                updateRV()
             }else{
                 Log.e("MainActivity", "Unable to get data", )
             }
@@ -72,11 +82,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun addNote(noteText: String){
         CoroutineScope(IO).launch {
-            val newnote = Notes(0,noteText)
-            repository.addNote(newnote)
-            notes.add(newnote)
-            updateRV(notes)
-            adapter.notifyDataSetChanged()
+            repository.addNote(Notes(0, noteText))
+            getItemsList()
         }
 
     }
@@ -108,7 +115,10 @@ class MainActivity : AppCompatActivity() {
                     _, _ ->
                 run {
                     editNote(id, updatedNote.text.toString())
-                    updateRV(notes)
+                    CoroutineScope(IO).launch {
+                        getItemsList()
+                        updateRV()
+                    }
                 }
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener {

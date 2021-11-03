@@ -10,17 +10,17 @@ import com.example.w6_d4_note_app.databinding.ItemRowBinding
 
 class NoteAdapter(
     private val activity: MainActivity,
-    private var items: ArrayList<Notes>): RecyclerView.Adapter<NoteAdapter.ItemViewHolder>() {
+    private var items: List<Notes>): RecyclerView.Adapter<NoteAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: ItemRowBinding): RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteAdapter.ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
             ItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: NoteAdapter.ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int){
         val item = items[position]
 
         holder.binding.apply {
@@ -39,8 +39,9 @@ class NoteAdapter(
 
     override fun getItemCount() = items.size
 
-    fun updateRv(note: ArrayList<Notes>){
-        this.items = note
-        //notifyDataSetChanged()
+    fun updateAdapter(newNote: List<Notes>)
+    {
+        items = newNote
+        this.notifyDataSetChanged()
     }
 }

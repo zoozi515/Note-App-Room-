@@ -29,5 +29,5 @@ abstract class NoteDatabase:RoomDatabase() {
             }
         }
     }
-    abstract fun noteDao():NoteDao;
+    abstract fun noteDao():NoteDao
 }
