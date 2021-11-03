@@ -26,12 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var notes: List<Notes>
 
-   /* lateinit var db : DatabaseHandler
-
-    lateinit var edmsg : EditText
-    lateinit var btnsav : Button
-    lateinit var rvnote : RecyclerView */
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,15 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         rvNotes = findViewById(R.id.recyclerView)
         updateRV()
-
-       /* db = DatabaseHandler(this)
-
-        edmsg = findViewById(R.id.messageEditText)
-        btnsav = findViewById(R.id.saveButton)
-        btnsav.setOnClickListener { postNote() }
-
-        rvnote = findViewById(R.id.recyclerView)
-        updateRV()*/
 
     }
 
@@ -124,49 +109,4 @@ class MainActivity : AppCompatActivity() {
         alert.setView(updatedNote)
         alert.show()
     }
-
-    /*
-    private fun updateRV(){
-        rvnote.adapter = NoteAdapter(this, getItemsList())
-        rvnote.layoutManager = LinearLayoutManager(this)
-    }
-
-    private fun getItemsList(): ArrayList<NoteModel>{
-        return db.viewNotes()
-    }
-
-    private fun postNote(){
-        db.addNote(NoteModel(0, edmsg.text.toString()))
-        edmsg.text.clear()
-        Toast.makeText(this, "Note Added", Toast.LENGTH_LONG).show()
-        updateRV()
-    }
-
-    private fun editNote(noteID: Int, noteText: String){
-        db.updateNote(NoteModel(noteID, noteText))
-        updateRV()
-    }
-
-    fun deleteNote(noteID: Int){
-        db.deleteNote(NoteModel(noteID, ""))
-        updateRV()
-    }
-
-    fun raiseDialog(id: Int){
-        val dialogBuilder = AlertDialog.Builder(this)
-        val updatedNote = EditText(this)
-        updatedNote.hint = "Enter new text"
-        dialogBuilder
-            .setCancelable(false)
-            .setPositiveButton("Save", DialogInterface.OnClickListener {
-                    _, _ -> editNote(id, updatedNote.text.toString())
-            })
-            .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                    dialog, _ -> dialog.cancel()
-            })
-        val alert = dialogBuilder.create()
-        alert.setTitle("Update Note")
-        alert.setView(updatedNote)
-        alert.show()
-    }*/
 }

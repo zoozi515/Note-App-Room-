@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Notes::class],version = 1,exportSchema = false)
+@Database(entities = [Notes::class],version = 2,exportSchema = false)
 abstract class NoteDatabase:RoomDatabase() {
 
     companion object{
@@ -19,7 +19,7 @@ abstract class NoteDatabase:RoomDatabase() {
             }
             synchronized(this){  // protection from concurrent execution on multiple threads
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
+                    context.applicationContext, //whenever any change happen to db it will be updated bcz its app context not activity context
                     NoteDatabase::class.java,
                     "note_database"
                 ).fallbackToDestructiveMigration()  // Destroys old database on version change
