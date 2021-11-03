@@ -2,7 +2,7 @@ package com.example.w6_d4_note_app
 
 class NoteRepository(private val noteDao: NoteDao) {
 
-    val getNotes: List<Notes> = noteDao.viewNotes()
+    val getNotes: ArrayList<Notes> = noteDao.viewNotes()
 
     suspend fun addNote(note: Notes){
         noteDao.addNote(note)

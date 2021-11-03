@@ -10,7 +10,7 @@ import com.example.w6_d4_note_app.databinding.ItemRowBinding
 
 class NoteAdapter(
     private val activity: MainActivity,
-    private val items: List<Notes>): RecyclerView.Adapter<NoteAdapter.ItemViewHolder>() {
+    private var items: ArrayList<Notes>): RecyclerView.Adapter<NoteAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: ItemRowBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -38,4 +38,9 @@ class NoteAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    fun updateRv(note: ArrayList<Notes>){
+        this.items = note
+        //notifyDataSetChanged()
+    }
 }

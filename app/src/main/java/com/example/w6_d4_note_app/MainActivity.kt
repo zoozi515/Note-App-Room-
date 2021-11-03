@@ -24,13 +24,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editText: EditText
     private lateinit var submitBtn: Button
 
-    private lateinit var notes: List<Notes>
+    private lateinit var notes: ArrayList<Notes>
+    lateinit var adapter : NoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        notes = listOf()
+        notes = ArrayList()
 
         editText = findViewById(R.id.messageEditText)
         submitBtn = findViewById(R.id.saveButton)
@@ -38,19 +39,21 @@ class MainActivity : AppCompatActivity() {
             addNote(editText.text.toString())
             editText.text.clear()
             editText.clearFocus()
-            updateRV()
+            updateRV(notes)
         }
 
         getItemsList()
 
         rvNotes = findViewById(R.id.recyclerView)
-        updateRV()
+        adapter = NoteAdapter(this, notes)
+        rvNotes.adapter = adapter
+        rvNotes.layoutManager = LinearLayoutManager(this)
+        //updateRV(notes)
 
     }
 
-    private fun updateRV(){
-        rvNotes.adapter = NoteAdapter(this, notes)
-        rvNotes.layoutManager = LinearLayoutManager(this)
+    private fun updateRV(new_note : ArrayList<Notes>){
+        adapter.updateRv(new_note)
     }
 
     private fun getItemsList(){
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             }.await()
             if(data.isNotEmpty()){
                 notes = data
-                updateRV()
+                updateRV(notes)
             }else{
                 Log.e("MainActivity", "Unable to get data", )
             }
@@ -69,19 +72,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun addNote(noteText: String){
         CoroutineScope(IO).launch {
-            repository.addNote(Notes(0, noteText))
+            val newnote = Notes(0,noteText)
+            repository.addNote(newnote)
+            notes.add(newnote)
+            updateRV(notes)
+            adapter.notifyDataSetChanged()
         }
+
     }
 
     private fun editNote(noteID: Int, noteText: String){
         CoroutineScope(IO).launch {
             repository.updateNote(Notes(noteID,noteText))
+            getItemsList()
         }
     }
 
     fun deleteNote(noteID: Int){
         CoroutineScope(IO).launch {
             repository.deleteNote(Notes(noteID,""))
+            getItemsList()
         }
     }
 
@@ -98,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                     _, _ ->
                 run {
                     editNote(id, updatedNote.text.toString())
-                    updateRV()
+                    updateRV(notes)
                 }
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener {
