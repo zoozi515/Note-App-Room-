@@ -8,11 +8,11 @@ interface NoteDao {
     suspend fun viewNotes(): List<Notes>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addNote(note: Notes)
+     suspend fun addNote(note: Notes)
 
     @Delete
-    suspend fun deleteNote(note: Notes)
+     suspend fun deleteNote(note: Notes)
 
     @Update
-    suspend fun updateNote(note: Notes)
+     suspend fun updateNote(note: Notes)
 }

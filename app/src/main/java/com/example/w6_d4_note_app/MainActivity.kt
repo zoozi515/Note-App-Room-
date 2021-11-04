@@ -6,15 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
+import kotlinx.coroutines.*
+
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,33 +38,44 @@ class MainActivity : AppCompatActivity() {
             addNote(editText.text.toString())
             editText.text.clear()
             editText.clearFocus()
-            //updateRV()
+            
+
             getItemsList()
+
+
+
         }
 
         //getItemsList()
 
+
         rvNotes = findViewById(R.id.recyclerView)
-        updateRV()
+
         adapter = NoteAdapter(this, notes)
         rvNotes.adapter = adapter
         rvNotes.layoutManager = LinearLayoutManager(this)
-        //updateRV(notes)
+//        updateRV()
+
 
     }
 
     private fun updateRV(){
-        rvNotes.adapter = NoteAdapter(this, notes)
-        rvNotes.layoutManager = LinearLayoutManager(this)
+
 
         CoroutineScope(Dispatchers.Main).launch {
-            adapter.updateAdapter(notes)
-            rvNotes.adapter = adapter
-            rvNotes.layoutManager = LinearLayoutManager(this@MainActivity)
+
+                adapter.updateAdapter(notes)
+                rvNotes.adapter = adapter
+                rvNotes.layoutManager = LinearLayoutManager(this@MainActivity)
+
+
+
         }
+
+
     }
 
-    private fun getItemsList(){
+    private  fun getItemsList(){
         CoroutineScope(IO).launch {
             val data = async {
                 repository.getNotes()
@@ -82,8 +91,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun addNote(noteText: String){
         CoroutineScope(IO).launch {
-            repository.addNote(Notes(0, noteText))
+
+
+                repository.addNote(Notes(0, noteText))
             getItemsList()
+
+
+
         }
 
     }
@@ -118,7 +132,11 @@ class MainActivity : AppCompatActivity() {
                     CoroutineScope(IO).launch {
                         getItemsList()
                         updateRV()
+
+
                     }
+
+
                 }
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener {

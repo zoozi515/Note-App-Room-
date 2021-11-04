@@ -20,7 +20,9 @@ class NoteAdapter(
         )
     }
 
+
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int){
+
         val item = items[position]
 
         holder.binding.apply {
