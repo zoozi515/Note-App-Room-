@@ -4,9 +4,8 @@ import androidx.room.*
 
 @Dao
 interface NoteDao {
-
     @Query("SELECT * FROM Notes ORDER BY id ASC")
-    fun viewNotes(): List<Notes>
+    suspend fun viewNotes(): List<Notes>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addNote(note: Notes)
