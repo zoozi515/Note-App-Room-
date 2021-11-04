@@ -4,7 +4,6 @@ import androidx.room.*
 
 @Dao
 interface NoteDao {
-
     @Query("SELECT * FROM Notes ORDER BY id ASC")
     suspend fun viewNotes(): List<Notes>
 

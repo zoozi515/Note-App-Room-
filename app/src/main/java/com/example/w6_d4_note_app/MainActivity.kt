@@ -9,7 +9,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 import kotlinx.coroutines.*
+
 import kotlinx.coroutines.Dispatchers.IO
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        notes = listOf()
+        notes = ArrayList()
 
         editText = findViewById(R.id.messageEditText)
         submitBtn = findViewById(R.id.saveButton)
@@ -36,24 +38,29 @@ class MainActivity : AppCompatActivity() {
             addNote(editText.text.toString())
             editText.text.clear()
             editText.clearFocus()
+            
 
             getItemsList()
 
 
+
         }
 
-        getItemsList()
+        //getItemsList()
 
 
         rvNotes = findViewById(R.id.recyclerView)
+
         adapter = NoteAdapter(this, notes)
         rvNotes.adapter = adapter
         rvNotes.layoutManager = LinearLayoutManager(this)
 //        updateRV()
 
+
     }
 
     private fun updateRV(){
+
 
         CoroutineScope(Dispatchers.Main).launch {
 
@@ -64,7 +71,6 @@ class MainActivity : AppCompatActivity() {
 
 
         }
-
 
 
     }
@@ -86,11 +92,14 @@ class MainActivity : AppCompatActivity() {
     private fun addNote(noteText: String){
         CoroutineScope(IO).launch {
 
+
                 repository.addNote(Notes(0, noteText))
             getItemsList()
 
 
+
         }
+
     }
 
     private fun editNote(noteID: Int, noteText: String){
@@ -124,7 +133,9 @@ class MainActivity : AppCompatActivity() {
                         getItemsList()
                         updateRV()
 
+
                     }
+
 
                 }
             })
